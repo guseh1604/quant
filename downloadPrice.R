@@ -19,8 +19,10 @@ downloadPrices = function(year) {
     price = xts(NA, order.by = Sys.Date()) # 빈 시계열 데이터 생성
     name = KOR_ticker$'종목코드'[i] # 티커 부분 선택
     
-    from = (Sys.Date() - years(year)) %>% str_remove_all('-') # 시작일
-    to = Sys.Date() %>% str_remove_all('-') # 종료일
+    #from = (Sys.Date() - years(year)) %>% str_remove_all('-') # 시작일
+    from = '19900101'
+    #to = Sys.Date() %>% str_remove_all('-') # 종료일
+    to = '20221231'
     
     # 오류 발생 시 이를 무시하고 다음 루프로 진행
     tryCatch({
@@ -36,8 +38,8 @@ downloadPrices = function(year) {
         read_csv()
       
       # 필요한 열만 선택 후 클렌징
-      price = data_html[c(1, 5)]
-      colnames(price) = (c('Date', 'Price'))
+      price = data_html[c(1, 2, 3, 4, 5, 6)]
+      colnames(price) = (c('Date', 'StartPrice', 'HighPrice', 'LowPrice', 'EndPrice', 'Amount'))
       price = na.omit(price)
       price$Date = parse_number(price$Date)
       price$Date = ymd(price$Date)
@@ -51,7 +53,7 @@ downloadPrices = function(year) {
     
     # 다운로드 받은 파일을 생성한 폴더 내 csv 파일로 저장
     write.csv(data.frame(price),
-              paste0('data/KOR_price/', name, '_price.csv'))
+              paste0('data/KOR_price_game/', name, '_price.csv'))
     
     # 타임슬립 적용
     Sys.sleep(2)
@@ -59,7 +61,7 @@ downloadPrices = function(year) {
 }
 
 main = function() {
-  downloadPrices(10)
+  downloadPrices(15)
 }
 
 main()
